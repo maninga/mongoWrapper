@@ -25,18 +25,18 @@ mongoWrapper.MongoWrapper = MongoWrapper;
 // native BSON or Pure BSON
 mongoWrapper.ObjectId = function() {
         return function(id) {
-            if( id.constructor.name === 'ObjectID' ) return id;
-            return new mongo.ObjectID(id.toString());
+            if( id && id.constructor && id.constructor.name === 'ObjectID' ) return id;
+            return new mongo.ObjectID(id);
 	};
 }();
 
 mongoWrapper.checkObjectId = function( s ){
 
   // It already is a mongo.ObjectID
-  if( s.constructor.name === 'ObjectID' ) return true;
+  if( s && s.constructor && s.constructor.name === 'ObjectID' ) return true;
 
   // It's a string
-  return new RegExp("^[0-9a-fA-F]{24}$").test(s.toString());
+  return new RegExp("^[0-9a-fA-F]{24}$").test(s);
 }
 
 MongoWrapper.prototype.connect = function(url, options, cb ){
