@@ -24,26 +24,19 @@ mongoWrapper.MongoWrapper = MongoWrapper;
 // ObjectId is the most handy method of all. This will work with
 // native BSON or Pure BSON
 mongoWrapper.ObjectId = function() {
-	if (!mongo.BSONNative || !mongo.BSONNative.ObjectID) {
-	  return function(id) {
-                if( id instanceof mongo.ObjectID ) return id;
-		return mongo.BSONPure.ObjectID.createFromHexString(id);
-	  };
-	}
-	return function(id) {
-                // if( id instanceof mongo.BSONNative.ObjectID ) return id;
-                if( id instanceof mongo.ObjectID ) return id;
-		return new mongo.BSONNative.ObjectID(id);
+        return function(id) {
+            if( id.constructor.name === 'ObjectID' ) return id;
+            return new mongo.ObjectID(id.toString());
 	};
 }();
 
 mongoWrapper.checkObjectId = function( s ){
 
   // It already is a mongo.ObjectID
-  if( s instanceof mongo.ObjectID ) return true;
+  if( s.constructor.name === 'ObjectID' ) return true;
 
   // It's a string
-  return new RegExp("^[0-9a-fA-F]{24}$").test(s);
+  return new RegExp("^[0-9a-fA-F]{24}$").test(s.toString());
 }
 
 MongoWrapper.prototype.connect = function(url, options, cb ){
